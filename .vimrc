@@ -16,11 +16,18 @@ set ruler                    " show me where i am
 set visualbell               " do not bother my coworkers
 " ================ Search ===========================
 set ignorecase               " case-insensitive search
-set smartcase                " only if upper-case character NOT exists
+set smartcase                " only if upper-case character NOT exists.
 set nohlsearch               " don't continue to highlight searched phrases.
 set incsearch                " but do highlight as you type your search.
 " ================ Indentation ======================
+" default
 set expandtab                " use spaces instead of tabs
+set tabstop=2
+set softtabstop=2
+set shiftwidth=2
+" file type specific
+" au FileType cpp setl ts=2 sts=2 sw=2
+au FileType python setl ts=4 sts=4 sw=4
 " ================ Scrolling ========================
 set scrolloff=8              " start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
@@ -41,6 +48,8 @@ let mapleader=","            " change leader key. this have to be set before plu
 " swap 'goto' marked position key between 'current file' and 'global'
 nnoremap ' `
 nnoremap ` '
+" search for visually selected text.
+vnoremap // y/<C-R>"<CR>
 " ================ Platform Specifics ===============
 if has('gui_running')        " gvim
   colorscheme desert
