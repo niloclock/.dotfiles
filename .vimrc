@@ -1,16 +1,30 @@
 " ================ General Setting ==================
+" Detect OS {{{
+  let s:OS = substitute(system('uname -s'),"\n","","")
+  let s:is_mac = (s:OS == "Darwin")
+  let s:is_macvim = has('gui_macvim')
+  let s:is_windows = has('win32') || has('win64')
+  let s:is_cygwin = has('win32unix')
+" }}}
 set nocompatible             " get rid of Vi compatibility mode
 set exrc                     " allow per project vim conf.
 set secure                   " but, be secure on it
-filetype plugin indent on    " filetype detection[ON] plugin[ON] indent[ON]
-syntax enable                " enable syntax highlighting (previously syntax on).
+set title                    " set the terminal title
 set number                   " show line numbers
 set nowrap                   " do not wrap lines
 set cursorline               " show cursor lines
-set clipboard=unnamed        " for macOS Sierra, solve clippboard error when used with 'tmux' 
+if exists ('$TMUX')
+  set clipboard=unnamed      " for macOS Sierra, solve clippboard error when used with 'tmux' 
+else
+  set clipboard=
+endif
+if s:is_windows && !s:is_cygwin
+  set shell=c:\windows\system32\cmd.exe
+endif
+set mouse=a                  " enable mouse
+set mousehide                " hide when typed
 set noswapfile               " do not make swap files
 set hidden                   " keep the changed buffer without saving
-set title                    " set the terminal title
 set laststatus=2             " last window always has a statusline
 set ruler                    " show me where i am
 set visualbell               " do not bother my coworkers
@@ -56,14 +70,76 @@ if has('gui_running')        " gvim
 else
   colorscheme desert
 end
-let OS=substitute(system('uname -s'),"\n","","")
-if (OS == "Darwin")
-    " do something that only makes sense on a Mac
-endif
 " ================ Plugins ==========================
+" vim-plug {{{
 " specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
-call plug#begin('~/.vim/plugged')
+" call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
-Plug 'sheerun/vim-polyglot'  " Syntax highlighting
+" Plug 'sheerun/vim-polyglot'  " Syntax highlighting
+" Plug 'shougo/denite.nvim'    " Dark powered asynchronous unite all interfaces for Neovim/Vim8
 " Add plugins to &runtimepath
-call plug#end()
+" call plug#end()
+" }}}
+" INIT dein {{{
+  set rtp+=~/.vim/dein/repos/github.com/Shougo/dein.vim " path to dein.vim
+  call dein#begin(expand('~/.vim/dein/')) " plugins' root path
+  call dein#add('Shougo/dein.vim')
+" }}}
+" CORE plugins {{{
+  call dein#add('Shougo/denite.nvim') " {{{
+    " Change navi. key mappings.
+    call denite#custom#map(
+      \ 'insert',
+      \ '<C-j>',
+      \ '<denite:move_to_next_line>',
+      \ 'noremap'
+      \)
+    call denite#custom#map(
+      \ 'insert',
+      \ '<C-k>',
+      \ '<denite:move_to_previous_line>',
+      \ 'noremap'
+      \)
+    " Key bindings
+    nnoremap <C-p> :Denite file_rec<CR>
+    nnoremap <space>s :Denite buffer<CR>
+  " }}}
+  call dein#add('bling/vim-airline') " {{{
+    let g:airline#extensions#tabline#enabled = 1
+    let g:airline#extensions#tabline#left_sep = ' '
+    let g:airline#extensions#tabline#left_alt_sep = '¦'
+    let g:airline#extensions#tabline#buffer_idx_mode = 1
+  " }}}
+" }}}
+" SYNTAX HIGHLIGHTING {{{
+  call dein#add('sheerun/vim-polyglot')
+" }}}
+" SCM plugins {{{
+  call dein#add('tpope/vim-fugitive') " {{{
+    nnoremap <silent> <leader>gs :Gstatus<CR>
+    nnoremap <silent> <leader>gd :Gdiff<CR>
+    nnoremap <silent> <leader>gc :Gcommit<CR>
+    nnoremap <silent> <leader>gb :Gblame<CR>
+    nnoremap <silent> <leader>gl :Glog<CR>
+    nnoremap <silent> <leader>gp :Git push<CR>
+    nnoremap <silent> <leader>gw :Gwrite<CR>
+    nnoremap <silent> <leader>gr :Gremove<CR>
+    autocmd BufReadPost fugitive://* set bufhidden=delete
+  " }}}
+" }}}
+" autocmd {{{
+  " go back to previous position of cursor if any
+  autocmd BufReadPost *
+    \ if line("'\"") > 0 && line("'\"") <= line("$") |
+    \  exe 'normal! g`"zvzz' |
+    \ endif
+
+  autocmd FileType python setlocal foldmethod=indent
+  autocmd FileType vim setlocal fdm=indent keywordprg=:help
+" }}}
+" FINI dein {{{
+  call dein#end()
+  autocmd VimEnter * call dein#call_hook('post_source')
+  filetype plugin indent on    " filetype detection[ON] plugin[ON] indent[ON]
+  syntax enable                " enable syntax highlighting (previously syntax on).
+" }}}
