@@ -12,11 +12,11 @@ set secure                   " but, be secure on it
 set title                    " set the terminal title
 set number                   " show line numbers
 set nowrap                   " do not wrap lines
-set cursorline               " show cursor lines
+""set cursorline             " show cursor lines
 if exists ('$TMUX')
   set clipboard=unnamed      " for macOS Sierra, solve clippboard error when used with 'tmux' 
 else
-  set clipboard=
+  set clipboard=unnamed
 endif
 if s:is_windows && !s:is_cygwin
   set shell=c:\windows\system32\cmd.exe
@@ -25,9 +25,15 @@ set mouse=a                  " enable mouse
 set mousehide                " hide when typed
 set noswapfile               " do not make swap files
 set hidden                   " keep the changed buffer without saving
+set fileformats+=mac         " add mac to auto-detection of file format line endings
 set laststatus=2             " last window always has a statusline
-set ruler                    " show me where i am
+""set ruler                    " show me where i am (comment out. vim-airline override this)
 set visualbell               " do not bother my coworkers
+""set tags+=~/.tags/**/tags    " my all tag files are placed in ~/.tags/.. <-- reflect real path
+" neovim specific -----------------------------------
+if has('nvim')
+  set termguicolors          " make more colorful
+endif
 " ================ Search ===========================
 set ignorecase               " case-insensitive search
 set smartcase                " only if upper-case character NOT exists.
@@ -139,7 +145,7 @@ end
 " }}}
 " FINI dein {{{
   call dein#end()
-  autocmd VimEnter * call dein#call_hook('post_source')
+  ""autocmd VimEnter * call dein#call_hook('post_source')
   filetype plugin indent on    " filetype detection[ON] plugin[ON] indent[ON]
   syntax enable                " enable syntax highlighting (previously syntax on).
 " }}}
