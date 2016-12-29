@@ -70,11 +70,13 @@ nnoremap ' `
 nnoremap ` '
 " search for visually selected text.
 vnoremap // y/<C-R>"<CR>
+nnoremap <C-Tab> :bn<CR>
+nnoremap <C-S-Tab> :bp<CR>
 " ================ Platform Specifics ===============
 if has('gui_running')        " gvim
   colorscheme desert
 else
-  colorscheme desert
+""colorscheme desert
 end
 " ================ Plugins ==========================
 " vim-plug {{{
