@@ -48,6 +48,7 @@ set shiftwidth=2
 " file type specific
 " au FileType cpp setl ts=2 sts=2 sw=2
 au FileType python setl ts=4 sts=4 sw=4
+au FileType rust setl ts=4 sts=4 sw=4
 " ================ Scrolling ========================
 set scrolloff=8              " start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
@@ -62,7 +63,7 @@ set wildmode=list:longest
 set wildignore=*.o,*.obj,*~  " stuff to ignore when tab completing
 set wildignore+=*DS_Store*
 set wildignore+=*.png,*.jpg,*.gif
-set shortmess=atI
+set shortmess=ato
 " ================ Key mapping ======================
 let mapleader=","            " change leader key. this have to be set before plugins
 " swap 'goto' marked position key between 'current file' and 'global'
@@ -135,15 +136,27 @@ end
     autocmd BufReadPost fugitive://* set bufhidden=delete
   " }}}
 " }}}
+" Language plugins {{{
+  call dein#add('racer-rust/vim-racer') " {{{
+    let g:racer_cmd = "~/.cargo/bin/racer"
+    let g:racer_experimental_completer = 1
+    au FileType rust nmap gd <Plug>(rust-def)
+    au FileType rust nmap gs <Plug>(rust-def-split)
+    au FileType rust nmap gx <Plug>(rust-def-vertical)
+    au FileType rust nmap <leader>gd <Plug>(rust-doc)
+  " }}}
+" }}}
 " autocmd {{{
   " go back to previous position of cursor if any
   autocmd BufReadPost *
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
     \  exe 'normal! g`"zvzz' |
     \ endif
-
   autocmd FileType python setlocal foldmethod=indent
   autocmd FileType vim setlocal fdm=indent keywordprg=:help
+  " rusty-tags
+  autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
+  autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&"
 " }}}
 " FINI dein {{{
   call dein#end()
