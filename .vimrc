@@ -47,8 +47,8 @@ set softtabstop=2
 set shiftwidth=2
 " file type specific
 " au FileType cpp setl ts=2 sts=2 sw=2
-au FileType python setl ts=4 sts=4 sw=4
-au FileType rust setl ts=4 sts=4 sw=4
+autocmd FileType python setl ts=4 sts=4 sw=4
+autocmd FileType rust setl ts=4 sts=4 sw=4
 " ================ Scrolling ========================
 set scrolloff=8              " start scrolling when we're 8 lines away from margins
 set sidescrolloff=15
@@ -79,23 +79,49 @@ if has('gui_running')        " gvim
 else
 ""colorscheme desert
 end
+" ================ Functions ========================
+function! s:get_path_if_exists(bin)
+  echom "Finding path for ".a:bin
+  if !executable(a:bin)
+    return ""
+  endif
+  let l:bin_path = system("which ".a:bin)
+  return l:bin_path
+endfunction
 " ================ Plugins ==========================
-" vim-plug {{{
 " specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
-" call plug#begin('~/.vim/plugged')
+" START vim-plug {{{
+call plug#begin('~/.config/nvim/plugged')
+" }}}
 " Make sure you use single quotes
-" Plug 'sheerun/vim-polyglot'  " Syntax highlighting
-" Plug 'shougo/denite.nvim'    " Dark powered asynchronous unite all interfaces for Neovim/Vim8
 " Add plugins to &runtimepath
-" call plug#end()
-" }}}
-" INIT dein {{{
-  set rtp+=~/.vim/dein/repos/github.com/Shougo/dein.vim " path to dein.vim
-  call dein#begin(expand('~/.vim/dein/')) " plugins' root path
-  call dein#add('Shougo/dein.vim')
-" }}}
 " CORE plugins {{{
-  call dein#add('Shougo/denite.nvim') " {{{
+  Plug 'Shougo/denite.nvim'
+  Plug 'bling/vim-airline'
+" }}}
+" SCM {{{
+  Plug 'tpope/vim-fugitive'
+" }}}
+" SYNTAX HIGHLIGHTING {{{
+  "Plug 'scrooloose/syntastic'
+  Plug 'sheerun/vim-polyglot'
+" }}}
+" LANGUAGE SUPPORTS {{{
+  Plug 'racer-rust/vim-racer', { 'for': 'rust' }
+  " Use mckinnsb's fork of rust.vim to solve syntastics error
+  " When the rust.vim fix that, get back to offical
+  " Plug 'rust-lang/rust.vim', { 'for': 'rust' }
+  Plug 'mckinnsb/rust.vim', { 'for': 'rust' }
+  Plug 'benekastah/neomake', { 'for': 'rust' }
+" }}}
+" FINISH vim-plug {{{
+call plug#end()
+" }}}
+" Plugin setting {{{
+  " Plug 'Shougo/denite.nvim' {{{
+    " Key bindings
+    nnoremap <C-p> :Denite file_rec<CR>
+    nnoremap <leader><C-p> :Denite buffer<CR>
     " Change navi. key mappings.
     call denite#custom#map(
       \ 'insert',
@@ -109,22 +135,15 @@ end
       \ '<denite:move_to_previous_line>',
       \ 'noremap'
       \)
-    " Key bindings
-    nnoremap <C-p> :Denite file_rec<CR>
-    nnoremap <space>s :Denite buffer<CR>
   " }}}
-  call dein#add('bling/vim-airline') " {{{
-    let g:airline#extensions#tabline#enabled = 1
-    let g:airline#extensions#tabline#left_sep = ' '
-    let g:airline#extensions#tabline#left_alt_sep = '¦'
-    let g:airline#extensions#tabline#buffer_idx_mode = 1
+  " Plug 'bling/vim-airline' {{{
+    let g:airline#extensions#tabline#enabled=1
+    let g:airline#extensions#tabline#left_sep=' '
+    let g:airline#extensions#tabline#left_alt_sep='¦'
+    let g:airline#extensions#tabline#buffer_idx_mode=1
+    let g:airline#extensions#neomake#enabled=1
   " }}}
-" }}}
-" SYNTAX HIGHLIGHTING {{{
-  call dein#add('sheerun/vim-polyglot')
-" }}}
-" SCM plugins {{{
-  call dein#add('tpope/vim-fugitive') " {{{
+  " Plug 'tpope/vim-fugitive' {{{
     nnoremap <silent> <leader>gs :Gstatus<CR>
     nnoremap <silent> <leader>gd :Gdiff<CR>
     nnoremap <silent> <leader>gc :Gcommit<CR>
@@ -135,32 +154,43 @@ end
     nnoremap <silent> <leader>gr :Gremove<CR>
     autocmd BufReadPost fugitive://* set bufhidden=delete
   " }}}
-" }}}
-" Language plugins {{{
-  call dein#add('racer-rust/vim-racer') " {{{
+  " Plug 'racer-rust/vim-racer' {{{
     let g:racer_cmd = "~/.cargo/bin/racer"
     let g:racer_experimental_completer = 1
-    au FileType rust nmap gd <Plug>(rust-def)
-    au FileType rust nmap gs <Plug>(rust-def-split)
-    au FileType rust nmap gx <Plug>(rust-def-vertical)
-    au FileType rust nmap <leader>gd <Plug>(rust-doc)
+    " au FileType rust nmap gd <Plug>(rust-def)
+    " au FileType rust nmap gs <Plug>(rust-def-split)
+    " au FileType rust nmap gx <Plug>(rust-def-vertical)
+    " au FileType rust nmap gm <Plug>(rust-doc)
+  " }}}
+  " Plug 'rust-lang/rust.vim' {{{
+  let g:rustfmt_autosave = 1
   " }}}
 " }}}
 " autocmd {{{
+augroup aug4u
+  " clear up
+  autocmd!
+  " common {{{
   " go back to previous position of cursor if any
   autocmd BufReadPost *
     \ if line("'\"") > 0 && line("'\"") <= line("$") |
     \  exe 'normal! g`"zvzz' |
     \ endif
-  autocmd FileType python setlocal foldmethod=indent
+  " }}}
+  " vim {{{
   autocmd FileType vim setlocal fdm=indent keywordprg=:help
+  " }}}
+  " python {{{
+  autocmd FileType python setlocal foldmethod=indent
+  " }}}
+  " rust {{{
   " rusty-tags
-  autocmd BufRead *.rs :setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
-  autocmd BufWrite *.rs :silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&"
+  autocmd BufRead *.rs setlocal tags=./rusty-tags.vi;/,$RUST_SRC_PATH/rusty-tags.vi
+  autocmd BufWrite *.rs silent! exec "!rusty-tags vi --quiet --start-dir=" . expand('%:p:h') . "&"
+  " neomake
+  autocmd BufRead,BufWrite *.rs Neomake! cargo
+  " }}}
+augroup END
 " }}}
-" FINI dein {{{
-  call dein#end()
-  ""autocmd VimEnter * call dein#call_hook('post_source')
-  filetype plugin indent on    " filetype detection[ON] plugin[ON] indent[ON]
-  syntax enable                " enable syntax highlighting (previously syntax on).
-" }}}
+filetype plugin indent on    " filetype detection[ON] plugin[ON] indent[ON]
+syntax enable                " enable syntax highlighting (previously syntax on).
