@@ -64,6 +64,13 @@ set wildignore=*.o,*.obj,*~  " stuff to ignore when tab completing
 set wildignore+=*DS_Store*
 set wildignore+=*.png,*.jpg,*.gif
 set shortmess=ato
+" completion menu
+set completeopt=longest,menuone
+inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
+" inoremap <expr> <C-n> pumvisible() ? '<C-n>' :
+"   \ '<C-n><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
+" inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
+"   \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 " ================ Key mapping ======================
 let mapleader=","            " change leader key. this have to be set before plugins
 " swap 'goto' marked position key between 'current file' and 'global'
@@ -98,6 +105,7 @@ call plug#begin('~/.config/nvim/plugged')
 " CORE plugins {{{
   Plug 'Shougo/denite.nvim'
   Plug 'bling/vim-airline'
+  Plug 'benekastah/neomake', { 'for': ['rust'] }
 " }}}
 " SCM {{{
   Plug 'tpope/vim-fugitive'
@@ -112,7 +120,6 @@ call plug#begin('~/.config/nvim/plugged')
   " When the rust.vim fix that, get back to offical
   " Plug 'rust-lang/rust.vim', { 'for': 'rust' }
   Plug 'mckinnsb/rust.vim', { 'for': 'rust' }
-  Plug 'benekastah/neomake', { 'for': 'rust' }
 " }}}
 " FINISH vim-plug {{{
 call plug#end()
@@ -157,10 +164,10 @@ call plug#end()
   " Plug 'racer-rust/vim-racer' {{{
     let g:racer_cmd = "~/.cargo/bin/racer"
     let g:racer_experimental_completer = 1
-    " au FileType rust nmap gd <Plug>(rust-def)
-    " au FileType rust nmap gs <Plug>(rust-def-split)
-    " au FileType rust nmap gx <Plug>(rust-def-vertical)
-    " au FileType rust nmap gm <Plug>(rust-doc)
+    autocmd FileType rust nmap gd <Plug>(rust-def)
+    autocmd FileType rust nmap gs <Plug>(rust-def-split)
+    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
+    autocmd FileType rust nmap gm <Plug>(rust-doc)
   " }}}
   " Plug 'rust-lang/rust.vim' {{{
   let g:rustfmt_autosave = 1
