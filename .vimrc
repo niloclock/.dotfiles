@@ -38,6 +38,10 @@ if has('nvim')
   " set termguicolors          " make more colorful
   let g:python_host_prog = $HOME.'/envs/neovim/bin/python'
   let g:python3_host_prog = $HOME.'/envs/neovim3/bin/python'
+  " Escape to normal mode
+  tnoremap <Esc> <C-\><C-n>
+  " Select windows in terminal mode
+  tnoremap <C-w> <C-\><C-n><C-w>
 endif
 " ================ Search ===========================
 set ignorecase               " case-insensitive search
@@ -106,11 +110,11 @@ endfunction
 let s:post_plug = ['denite', 'neomake']
 " ================ Plugins ==========================
 " Automatic installation for Vim-plug
-  if empty(glob('~/.vim/autoload/plug.vim'))
-    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
-      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
-    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
-  endif
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+    \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
 " specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
 " START vim-plug {{{
 call plug#begin('~/.vim/plugged')
