@@ -7,7 +7,7 @@
   let s:is_cygwin = has('win32unix')
 " }}}
 set nocompatible             " get rid of Vi compatibility mode
-augroup augme                " initialize augme autocmd group
+augroup vimrc                " initialize vimrc autocmd group
   autocmd!
 augroup END
 set exrc                     " allow per project vim conf.
@@ -96,6 +96,12 @@ function! s:get_path_if_exists(bin)
 endfunction
 let s:post_plug = ['denite', 'neomake']
 " ================ Plugins ==========================
+" Automatic installation for Vim-plug
+  if empty(glob('~/.vim/autoload/plug.vim'))
+    silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+      \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+    autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+  endif
 " specify a directory for plugins (for Neovim: ~/.local/share/nvim/plugged)
 " START vim-plug {{{
 call plug#begin('~/.vim/plugged')
@@ -131,7 +137,7 @@ call plug#begin('~/.vim/plugged')
   " }}}
   Plug 'benekastah/neomake', { 'for': ['rust'] } " {{{
     function! s:post_plug_neomake()
-      augroup augme
+      augroup vimrc
         autocmd BufRead,BufWrite *.rs Neomake! cargo
       augroup END
     endfunction
@@ -152,7 +158,7 @@ call plug#begin('~/.vim/plugged')
     nnoremap <silent> <leader>gp :Git push<CR>
     nnoremap <silent> <leader>gw :Gwrite<CR>
     nnoremap <silent> <leader>gr :Gremove<CR>
-    augroup augme
+    augroup vimrc
       autocmd BufReadPost fugitive://* set bufhidden=delete
     augroup END
   " }}}
@@ -164,7 +170,7 @@ call plug#begin('~/.vim/plugged')
 " LANGUAGE SUPPORTS {{{
   Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
     let g:racer_experimental_completer = 1
-    augroup augme
+    augroup vimrc
       autocmd FileType rust nmap gd <Plug>(rust-def)
       autocmd FileType rust nmap gs <Plug>(rust-def-split)
       autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
@@ -184,7 +190,7 @@ for i in s:post_plug
 endfor
 " }}}
 " autocmd {{{
-augroup augme
+augroup vimrc
   " clear up
   " autocmd!
   " common {{{
