@@ -35,13 +35,15 @@ set visualbell               " do not bother my coworkers
 ""set tags+=~/.tags/**/tags    " my all tag files are placed in ~/.tags/.. <-- reflect real path
 " neovim specific -----------------------------------
 if has('nvim')
-  set termguicolors          " make more colorful
+  " set termguicolors          " make more colorful
+  let g:python_host_prog = $HOME.'/envs/neovim/bin/python'
+  let g:python3_host_prog = $HOME.'/envs/neovim3/bin/python'
 endif
 " ================ Search ===========================
 set ignorecase               " case-insensitive search
 set smartcase                " only if upper-case character NOT exists.
-set nohlsearch               " don't continue to highlight searched phrases.
 set incsearch                " but do highlight as you type your search.
+set nohlsearch               " don't continue to highlight searched phrases.
 " ================ Indentation ======================
 " default
 set expandtab                " use spaces instead of tabs
@@ -71,19 +73,26 @@ inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 " inoremap <expr> <M-,> pumvisible() ? '<C-n>' :
 "   \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 " ================ Key mapping ======================
-let mapleader=","            " change leader key. this have to be set before plugins
+" change leader key. this have to be set before plugins
+let mapleader=","
+" search for visually selected text.
+vnoremap // y/<C-R>"<CR>
+" move to next buffer
+nnoremap <C-Tab> :bn<CR>
+" move to previous buffer
+nnoremap <C-S-Tab> :bp<CR>
+" hit '/' highlights then enter search mode
+nnoremap / :set hlsearch<cr>/
+" toggle highlight states
+nnoremap <leader>/ :set hls!<cr>
 " swap 'goto' marked position key between 'current file' and 'global'
 nnoremap ' `
 nnoremap ` '
-" search for visually selected text.
-vnoremap // y/<C-R>"<CR>
-nnoremap <C-Tab> :bn<CR>
-nnoremap <C-S-Tab> :bp<CR>
 " ================ Platform Specifics ===============
 if has('gui_running')        " gvim
   colorscheme desert
 else
-""colorscheme desert
+  " colorscheme desert
 end
 " ================ Functions ========================
 function! s:get_path_if_exists(bin)
