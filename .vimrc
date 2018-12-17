@@ -15,7 +15,7 @@ set secure                   " but, be secure on it
 set title                    " set the terminal title
 set number                   " show line numbers
 set nowrap                   " do not wrap lines
-""set cursorline             " show cursor lines
+set cursorline               " show cursor lines
 if exists ('$TMUX')
   set clipboard=unnamed      " for macOS Sierra, solve clippboard error when used with 'tmux' 
 else
@@ -36,8 +36,8 @@ set visualbell               " do not bother my coworkers
 " neovim specific -----------------------------------
 if has('nvim')
   " set termguicolors          " make more colorful
-  let g:python_host_prog = $HOME.'/envs/neovim/bin/python'
-  let g:python3_host_prog = $HOME.'/envs/neovim3/bin/python'
+  let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
+  let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
   " Escape to normal mode
   tnoremap <Esc> <C-\><C-n>
   " Select windows in terminal mode
@@ -124,7 +124,7 @@ call plug#begin('~/.vim/plugged')
 " CORE plugins {{{
   Plug 'Shougo/denite.nvim' " {{{
     " Key bindings
-    nnoremap <C-p> :Denite file_rec<CR>
+    nnoremap <C-p> :Denite file/rec<CR>
     nnoremap <leader><C-p> :Denite buffer<CR>
     function! s:post_plug_denite()
       call denite#custom#map(
