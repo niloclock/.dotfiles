@@ -124,7 +124,7 @@ call plug#begin('~/.vim/plugged')
 " CORE plugins {{{
   Plug 'Shougo/denite.nvim' " {{{
     " Key bindings
-    nnoremap <C-p> :Denite file_rec<CR>
+    nnoremap <C-p> :Denite file/rec<CR>
     nnoremap <leader><C-p> :Denite buffer<CR>
     function! s:post_plug_denite()
       call denite#custom#map(
