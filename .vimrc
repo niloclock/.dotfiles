@@ -13,7 +13,7 @@ augroup END
 set exrc                     " allow per project vim conf.
 set secure                   " but, be secure on it
 set title                    " set the terminal title
-set number                   " show line numbers
+set number relativenumber    " show line numbers
 set nowrap                   " do not wrap lines
 set cursorline               " show cursor lines
 if exists ('$TMUX')
@@ -78,13 +78,13 @@ inoremap <expr> <CR> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
 "   \ '<C-x><C-o><C-n><C-p><C-r>=pumvisible() ? "\<lt>Down>" : ""<CR>'
 " ================ Key mapping ======================
 " change leader key. this have to be set before plugins
-let mapleader=","
+let mapleader=" "
 " search for visually selected text.
 vnoremap // y/<C-R>"<CR>
 " move to next buffer
-nnoremap <C-Tab> :bn<CR>
+nnoremap <leader><Tab> :bn<CR>
 " move to previous buffer
-nnoremap <C-S-Tab> :bp<CR>
+nnoremap <leader><S-Tab> :bp<CR>
 " hit '/' highlights then enter search mode
 nnoremap / :set hlsearch<cr>/
 " toggle highlight states
@@ -92,11 +92,16 @@ nnoremap <leader>/ :set hls!<cr>
 " swap 'goto' marked position key between 'current file' and 'global'
 nnoremap ' `
 nnoremap ` '
-" ================ Platform Specifics ===============
+" Delete current buffer without changing window layout
+nnoremap <leader>c :bp\|bd#<cr>
+" ================ Color scheme ===============
 if has('gui_running')        " gvim
   colorscheme desert
 else
   " colorscheme desert
+  " highlight SpellBad ctermbg=224 gui=undercurl guisp=Red
+  " Temporarily, disable SpellBad...
+  hi SpellBad NONE
 end
 " ================ Functions ========================
 function! s:get_path_if_exists(bin)
@@ -122,6 +127,16 @@ call plug#begin('~/.vim/plugged')
 " Make sure you use single quotes
 " Add plugins to &runtimepath
 " CORE plugins {{{
+  Plug 'scrooloose/nerdtree' " {{{
+    autocmd VimEnter * NERDTree
+    autocmd BufEnter * NERDTreeMirror
+    "CTRL-t to toggle tree view with CTRL-t
+    nmap <silent><C-t> :NERDTreeToggle<CR>
+    "Set F2 to put the cursor to the nerdtree
+    nmap <silent><F2> :NERDTreeFocus<CR>
+    nmap <silent><C-F2> :NERDTreeFind<CR>
+  " }}}
+  Plug 'jeffkreeftmeijer/vim-numbertoggle'
   Plug 'Shougo/denite.nvim' " {{{
     " Key bindings
     nnoremap <C-p> :Denite file/rec<CR>
@@ -140,6 +155,8 @@ call plug#begin('~/.vim/plugged')
         \ 'noremap'
         \)
     endfunction
+  " Multi-entry selection UI.
+  Plug 'junegunn/fzf'
   " }}}
   Plug 'bling/vim-airline' " {{{
     let g:airline#extensions#tabline#enabled=1
@@ -181,18 +198,31 @@ call plug#begin('~/.vim/plugged')
   Plug 'sheerun/vim-polyglot'
 " }}}
 " LANGUAGE SUPPORTS {{{
-  Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
-    let g:racer_experimental_completer = 1
-    augroup vimrc
-      autocmd FileType rust nmap gd <Plug>(rust-def)
-      autocmd FileType rust nmap gs <Plug>(rust-def-split)
-      autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
-      autocmd FileType rust nmap gm <Plug>(rust-doc)
-    augroup END
-  " }}}
-  Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
-    let g:rustfmt_autosave = 1
-  " }}}
+    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', } " {{{
+      let g:LanguageClient_serverCommands = {
+          \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+          \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+          \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+          \ 'python': ['/usr/local/bin/pyls'],
+          \ }
+      autocmd FileType rust nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+      " Or map each action separately
+      autocmd FileType rust nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+      autocmd FileType rust nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+      " autocmd FileType rust nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+    " }}}
+  "  Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
+  "    let g:racer_experimental_completer = 1
+  "    augroup vimrc
+  "      autocmd FileType rust nmap gd <Plug>(rust-def)
+  "      autocmd FileType rust nmap gs <Plug>(rust-def-split)
+  "      autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
+  "      autocmd FileType rust nmap gm <Plug>(rust-doc)
+  "    augroup END
+  "  " }}}
+  "  Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
+  "    let g:rustfmt_autosave = 1
+  "  " }}}
 " }}}
 " FINISH vim-plug {{{
 call plug#end()
