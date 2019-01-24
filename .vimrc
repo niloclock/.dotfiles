@@ -1,10 +1,11 @@
 " ================ General Setting ==================
-" Detect OS {{{
+" Detect System {{{
   let s:OS = substitute(system('uname -s'),"\n","","")
   let s:is_mac = (s:OS == "Darwin")
   let s:is_macvim = has('gui_macvim')
   let s:is_windows = has('win32') || has('win64')
   let s:is_cygwin = has('win32unix')
+  let s:hostname = substitute(system('hostname'),"\n","","")
 " }}}
 set nocompatible             " get rid of Vi compatibility mode
 augroup vimrc                " initialize vimrc autocmd group
@@ -36,8 +37,13 @@ set visualbell               " do not bother my coworkers
 " neovim specific -----------------------------------
 if has('nvim')
   " set termguicolors          " make more colorful
-  let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
-  let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
+  if s:hostname == "sonador-mdev-0"   " on company
+    let g:python_host_prog = $HOME.'/envs/neovim2/bin/python'
+    let g:python3_host_prog = $HOME.'/envs/neovim3/bin/python'
+  else
+    let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
+    let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
+  endif
   " Escape to normal mode
   tnoremap <Esc> <C-\><C-n>
   " Select windows in terminal mode
