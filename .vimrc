@@ -104,7 +104,7 @@ nnoremap <leader>c :bp\|bd#<cr>
 if has('gui_running')        " gvim
   colorscheme desert
 else
-  " colorscheme desert
+  colorscheme elflord
   " highlight SpellBad ctermbg=224 gui=undercurl guisp=Red
   " Temporarily, disable SpellBad...
   hi SpellBad NONE
