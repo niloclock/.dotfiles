@@ -178,11 +178,15 @@ call plug#begin('~/.vim/plugged')
       augroup END
     endfunction
   " }}}
-  if has('nvim')
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } " {{{
-    let g:deoplete#enable_at_startup = 1
+if has('nvim') " deoplete {{{
+  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } 
+else
+  Plug 'Shougo/deoplate.nvim'
+  Plug 'roxma/nvim-yarp'
+  Plug 'roxma/vim-hug-neovim-rpc'
+endif
+  let g:deoplete#enable_at_startup = 1
   " }}}
-  endif
 " }}}
 " SCM {{{
   Plug 'tpope/vim-fugitive' " {{{
@@ -211,11 +215,16 @@ call plug#begin('~/.vim/plugged')
           \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
           \ 'python': ['/usr/local/bin/pyls'],
           \ }
-      autocmd FileType rust nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-      " Or map each action separately
-      autocmd FileType rust nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-      autocmd FileType rust nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-      " autocmd FileType rust nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+      function! LC_maps()
+        if has_key(g:LanguageClient_serverCommands, &filetype)
+          nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+          " Or map each action separately
+          nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+          nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+          " autocmd FileType rust nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+        endif
+      endfunction
+      autocmd FileType rust,python,javascript call LC_maps()
     " }}}
   "  Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
   "    let g:racer_experimental_completer = 1
