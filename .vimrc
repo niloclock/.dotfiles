@@ -16,7 +16,7 @@ set secure                   " but, be secure on it
 set title                    " set the terminal title
 set number relativenumber    " show line numbers
 set nowrap                   " do not wrap lines
-set cursorline               " show cursor lines
+set nocursorline             " show cursor lines
 if exists ('$TMUX')
   set clipboard=unnamed      " for macOS Sierra, solve clippboard error when used with 'tmux' 
 else
