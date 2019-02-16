@@ -37,8 +37,8 @@ set visualbell               " do not bother my coworkers
 " neovim specific -----------------------------------
 if has('nvim')
   " set termguicolors          " make more colorful
-  let g:python_host_prog = $HOME.'/.pyenv/versions/neovim2/bin/python'
-  let g:python3_host_prog = $HOME.'/.pyenv/versions/neovim3/bin/python'
+  let g:python_host_prog = $HOME.'/.pyenv/versions/nvim-python2/bin/python'
+  let g:python3_host_prog = $HOME.'/.pyenv/versions/nvim-python3/bin/python'
   " Escape to normal mode
   tnoremap <Esc> <C-\><C-n>
   " Select windows in terminal mode

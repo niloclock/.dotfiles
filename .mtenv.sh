@@ -1,8 +1,11 @@
 # Install dependency
+echo ''
+echo '> Dependency ------------------------------------------'
+echo ''
 sudo apt-get update
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
-libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
-xz-utils tk-dev
+  libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
+  xz-utils tk-dev libffi-dev liblzma-dev python-openssl
 
 # common ######################################################
 if [ ! -d $HOME/bin ]; then
@@ -11,41 +14,38 @@ if [ ! -d $HOME/bin ]; then
 	source ~/.bashrc
 fi
 
-# python ######################################################
-#  pyenv git clone
 echo ''
 echo '> Python ------------------------------------------'
+echo ''
+# pyenv
 if [ -d ~/.pyenv ]; then
-  echo ': Already done'
+  echo ': Already installed'
 else
-  curl -L \
-    https://raw.githubusercontent.com/pyenv/pyenv-installer/master/bin/pyenv-installer \
-    | bash
-	echo 'export PYENV_ROOT="$HOME/.pyenv"' >> ~/.bashrc
-	echo 'export PATH="$PYENV_ROOT/bin:$PATH"' >> ~/.bashrc
-	echo 'eval "$(pyenv init -)"' >> ~/.bashrc
-  # Disable below scripts for shell performance issue
-  # echo 'eval "$(pyenv virtualenv-init -)"' >> ~/.bashrc
+  curl -L https://pyenv.run | bash
 	source ~/.bashrc
+fi
+# pipenv
+if type pipenv >/dev/null 2>&1; then
+  pip install --user pipenv
 fi
 
 echo ''
 echo '> Neovim ------------------------------------------'
+echo ''
 if type neovim >/dev/null 2>&1; then
   echo ': Already done'
 else
   sudo apt install -y neovim
   # python version 3.6.0 설치
   # 설치 가능한 버전은 pyenv install --list 명령어로 확인할 수 있다.
-  pyenv install 3.6.0
-  # pyenv-virtualenv plugin 설치
-  git clone https://github.com/pyenv/pyenv-virtualenv.git $(pyenv root)/plugins/pyenv-virtualenv
+  pyenv install 3.7.1
+  pyenv install 2.7.15
   # virtualenv 설정 및 neovim python plugin 설치
-  pyenv virtualenv 2.7.15 neovim2
-  pyenv virtualenv 3.6.0 neovim3
-  pyenv activate neovim2
+  pyenv virtualenv 2.7.15 nvim-python2
+  pyenv virtualenv 3.7.1 nvim-python3
+  pyenv activate nvim-python2
   pip install neovim
-  pyenv activate neovim3
+  pyenv activate nvim-python3
   pip install neovim
   # The following is optional, and the neovim3 env is still active
   # This allows flake8 to be available to linter plugins regardless
