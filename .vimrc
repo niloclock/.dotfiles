@@ -130,7 +130,7 @@ call plug#begin('~/.vim/plugged')
 " CORE plugins {{{
   Plug 'scrooloose/nerdtree' " {{{
     autocmd VimEnter * NERDTree
-    autocmd BufEnter * NERDTreeMirror
+    " autocmd BufEnter * NERDTreeMirror
     "CTRL-t to toggle tree view with CTRL-t
     nmap <silent><C-t> :NERDTreeToggle<CR>
     "Set F2 to put the cursor to the nerdtree
@@ -221,18 +221,22 @@ endif
       endfunction
       autocmd FileType rust,python,javascript call LC_maps()
     " }}}
-  "  Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
-  "    let g:racer_experimental_completer = 1
-  "    augroup vimrc
-  "      autocmd FileType rust nmap gd <Plug>(rust-def)
-  "      autocmd FileType rust nmap gs <Plug>(rust-def-split)
-  "      autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
-  "      autocmd FileType rust nmap gm <Plug>(rust-doc)
-  "    augroup END
-  "  " }}}
-  "  Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
-  "    let g:rustfmt_autosave = 1
-  "  " }}}
+    ""Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
+    ""  let g:racer_experimental_completer = 1
+    ""  augroup vimrc
+    ""    autocmd FileType rust nmap gd <Plug>(rust-def)
+    ""    autocmd FileType rust nmap gs <Plug>(rust-def-split)
+    ""    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
+    ""    autocmd FileType rust nmap gm <Plug>(rust-doc)
+    ""  augroup END
+    """ }}}
+    ""Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
+    ""  let g:rustfmt_autosave = 1
+    """ }}}
+    Plug 'nvie/vim-flake8' " {{{
+      let g:flake8_show_in_gutter=1
+      let g:flake8_show_in_file=1
+    " }}}
 " }}}
 " FINISH vim-plug {{{
 call plug#end()
