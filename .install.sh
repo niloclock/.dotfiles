@@ -1,39 +1,41 @@
-# Install dependency
-echo ''
-echo '> Dependency ------------------------------------------'
-echo ''
+# dependency #################################################
 sudo apt-get update
 sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
   libreadline-dev libsqlite3-dev wget curl llvm libncurses5-dev libncursesw5-dev \
   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
 
+# yadm: TODO
+
+
 # common ######################################################
 if [ ! -d $HOME/bin ]; then
   mkdir $HOME/bin
-  echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc
-	source ~/.bashrc
+  #echo 'export PATH="$HOME/bin:$PATH"' >> ~/.bashrc => Moved in '.rc.d/env.sh'
+  source ~/.bashrc
 fi
 
-echo ''
-echo '> Python ------------------------------------------'
-echo ''
+
+# python ######################################################
 # pyenv
 if [ -d ~/.pyenv ]; then
   echo ': Already installed'
 else
   curl -L https://pyenv.run | bash
-	source ~/.bashrc
+  source ~/.bashrc
 fi
 # pipenv
 if type pipenv >/dev/null 2>&1; then
   pip install --user pipenv
 fi
+# pytest
+if type pytest >/dev/null 2>&1; then
+  pip install --user pytest
+fi
 
-echo ''
-echo '> Neovim ------------------------------------------'
-echo ''
+
+# neovim ######################################################
 if type neovim >/dev/null 2>&1; then
-  echo ': Already done'
+  echo ': Already installed'
 else
   sudo apt install -y neovim
   # python version 3.6.0 설치
@@ -53,7 +55,9 @@ else
   # packages that provide cli programs that are used in Neovim.
   pip install flake8
   ln -s `pyenv which flake8` $HOME/bin/flake8  # Assumes that $HOME/bin is in $PATH
+  pyenv deactivate
 fi
+
 
 # # Zsh ################################
 # # install Zsh itself

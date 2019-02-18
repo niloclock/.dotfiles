@@ -262,7 +262,7 @@ augroup vimrc
   " }}}
   " python {{{
   autocmd FileType python setlocal ts=4 sts=4 sw=4
-  autocmd FileType python setlocal foldmethod=indent
+  "autocmd FileType python setlocal foldmethod=indent
   " }}}
   " rust {{{
   " autocmd FileType rust setl ts=4 sts=4 sw=4
