@@ -5,7 +5,12 @@ sudo apt-get install -y make build-essential libssl-dev zlib1g-dev libbz2-dev \
   xz-utils tk-dev libffi-dev liblzma-dev python-openssl
 
 # yadm: TODO
-
+if type yadm >/dev/null 2>&1; then
+  echo 'yadm) Already installed'
+else
+  echo 'yadm) Install'
+  sudo apt-get install -y yadm
+fi
 
 # common ######################################################
 if [ ! -d $HOME/bin ]; then
@@ -17,26 +22,28 @@ fi
 
 # python ######################################################
 # pyenv
-if [ -d ~/.pyenv ]; then
-  echo ': Already installed'
+if type pyenv >/dev/null 2>&1; then
+  echo 'pyenv) Already installed'
 else
+  echo 'pyenv) Install'
   curl -L https://pyenv.run | bash
   source ~/.bashrc
 fi
 # pipenv
-if type pipenv >/dev/null 2>&1; then
+if ! type pipenv >/dev/null 2>&1; then
   pip install --user pipenv
 fi
 # pytest
-if type pytest >/dev/null 2>&1; then
+if ! type pytest >/dev/null 2>&1; then
   pip install --user pytest
 fi
 
 
 # neovim ######################################################
-if type neovim >/dev/null 2>&1; then
-  echo ': Already installed'
+if type nvim >/dev/null 2>&1; then
+  echo 'neovim) Already installed'
 else
+  echo 'neovim) Install'
   sudo apt install -y neovim
   # python version 3.6.0 설치
   # 설치 가능한 버전은 pyenv install --list 명령어로 확인할 수 있다.
