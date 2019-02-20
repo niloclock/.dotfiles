@@ -95,6 +95,11 @@ nnoremap ' `
 nnoremap ` '
 " Delete current buffer without changing window layout
 nnoremap <leader>c :bp\|bd#<cr>
+" Move between windows
+nnoremap <C-h> <C-w>h
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+nnoremap <C-l> <C-w>l
 " ================ Color scheme ===============
 if has('gui_running')        " gvim
   colorscheme desert
