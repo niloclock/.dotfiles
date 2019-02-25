@@ -62,6 +62,7 @@ set sidescroll=1
 " ================ Appearance =======================
 set t_Co=256                 " enable 256-color mode.
 set list listchars=tab:»\ ,trail:·
+set cmdheight=2
 " ================ Etc... ===========================
 set history=1000             " remember more
 set wildmenu
