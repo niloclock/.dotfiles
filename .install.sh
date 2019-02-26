@@ -81,17 +81,18 @@ fi
 
 
 # Zsh ################################
-# install Zsh itself
-sudo apt install -y zsh
-# install Oh my Zsh
-sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
-# autojump
-sudo apt install -y autojump
-echo "plugins=(autojump)" >> ${ZDOTDIR:-$HOME}/.zshrc
-# zsh-autosuggestions
-git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
-echo 'plugins=(zsh-autosuggestions)' >> $HOME/.zshrc
-
+if false; then # disable
+  # install Zsh itself
+  sudo apt-get install -y zsh fonts-powerline
+  # install Oh my Zsh
+  sh -c "$(curl -fsSL https://raw.githubusercontent.com/robbyrussell/oh-my-zsh/master/tools/install.sh)"
+  # autojump
+  sudo apt install -y autojump
+  echo "plugins=(autojump)" >> ${ZDOTDIR:-$HOME}/.zshrc
+  # zsh-autosuggestions
+  git clone https://github.com/zsh-users/zsh-autosuggestions ${ZSH_CUSTOM:-~/.oh-my-zsh/custom}/plugins/zsh-autosuggestions
+  echo 'plugins=(zsh-autosuggestions)' >> $HOME/.zshrc
+fi
 
 # Rust #######################################
 # TODO
