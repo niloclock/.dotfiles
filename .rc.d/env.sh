@@ -17,4 +17,4 @@ eval "$(pipenv --completion)"
 export PATH="$HOME/.cargo/bin:$PATH"
 
 # Go
-export PATH="/usr/local/go/bin:$PATH"
+export PATH="/usr/local/go/bin:$HOME/go/bin:$PATH"

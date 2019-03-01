@@ -61,8 +61,8 @@ set sidescrolloff=15
 set sidescroll=1
 " ================ Appearance =======================
 set t_Co=256                 " enable 256-color mode.
-set list listchars=tab:»\ ,trail:·
 set cmdheight=2
+set list listchars=tab:..,trail:_,extends:>,precedes:<,nbsp:~,eol:$
 " ================ Etc... ===========================
 set history=1000             " remember more
 set wildmenu
@@ -179,13 +179,15 @@ call plug#begin('~/.vim/plugged')
       augroup END
     endfunction
   " }}}
-if has('nvim') " deoplete {{{
-  Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } 
-else
-  Plug 'Shougo/deoplate.nvim'
-  Plug 'roxma/nvim-yarp'
-  Plug 'roxma/vim-hug-neovim-rpc'
-endif
+  " deoplete : completion framework {{{ ------------------------
+  if has('nvim')
+    Plug 'Shougo/deoplete.nvim', { 'do': ':UpdateRemotePlugins' } 
+  else
+    Plug 'Shougo/deoplate.nvim'
+    Plug 'roxma/nvim-yarp'
+    Plug 'roxma/vim-hug-neovim-rpc'
+  endif
+  Plug 'zchee/deoplete-go', { 'do': 'make' }
   let g:deoplete#enable_at_startup = 1
   " }}}
 " }}}
@@ -204,45 +206,50 @@ endif
     augroup END
   " }}}
 " }}}
-" SYNTAX HIGHLIGHTING {{{
-  "Plug 'scrooloose/syntastic'
-  Plug 'sheerun/vim-polyglot'
-" }}}
 " LANGUAGE SUPPORTS {{{
-    Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', } " {{{
-      let g:LanguageClient_serverCommands = {
-          \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
-          \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
-          \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
-          \ 'python': ['/usr/local/bin/pyls'],
-          \ }
-      function! LC_maps()
-        if has_key(g:LanguageClient_serverCommands, &filetype)
-          nnoremap <F5> :call LanguageClient_contextMenu()<CR>
-          " Or map each action separately
-          nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
-          nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
-          " autocmd FileType rust nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
-        endif
-      endfunction
-      autocmd FileType rust,python,javascript call LC_maps()
-    " }}}
-    ""Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
-    ""  let g:racer_experimental_completer = 1
-    ""  augroup vimrc
-    ""    autocmd FileType rust nmap gd <Plug>(rust-def)
-    ""    autocmd FileType rust nmap gs <Plug>(rust-def-split)
-    ""    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
-    ""    autocmd FileType rust nmap gm <Plug>(rust-doc)
-    ""  augroup END
-    """ }}}
-    ""Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
-    ""  let g:rustfmt_autosave = 1
-    """ }}}
-    Plug 'nvie/vim-flake8' " {{{
-      let g:flake8_show_in_gutter=1
-      let g:flake8_show_in_file=1
-    " }}}
+  " Language Server -----------------------------------------------
+  Plug 'autozimu/LanguageClient-neovim', { 'branch': 'next', 'do': 'bash install.sh', } " {{{
+    let g:LanguageClient_serverCommands = {
+        \ 'rust': ['~/.cargo/bin/rustup', 'run', 'stable', 'rls'],
+        \ 'javascript': ['/usr/local/bin/javascript-typescript-stdio'],
+        \ 'javascript.jsx': ['tcp://127.0.0.1:2089'],
+        \ 'python': ['/usr/local/bin/pyls'],
+        \ }
+    function! LC_maps()
+      if has_key(g:LanguageClient_serverCommands, &filetype)
+        nnoremap <F5> :call LanguageClient_contextMenu()<CR>
+        " Or map each action separately
+        nnoremap <silent> K :call LanguageClient#textDocument_hover()<CR>
+        nnoremap <silent> gd :call LanguageClient#textDocument_definition()<CR>
+        " autocmd FileType rust nnoremap <silent> <F2> :call LanguageClient#textDocument_rename()<CR>
+      endif
+    endfunction
+    autocmd FileType rust,python,javascript call LC_maps()
+  " }}}
+  ""Plug 'racer-rust/vim-racer', { 'for': 'rust' } " {{{
+  ""  let g:racer_experimental_completer = 1
+  ""  augroup vimrc
+  ""    autocmd FileType rust nmap gd <Plug>(rust-def)
+  ""    autocmd FileType rust nmap gs <Plug>(rust-def-split)
+  ""    autocmd FileType rust nmap gx <Plug>(rust-def-vertical)
+  ""    autocmd FileType rust nmap gm <Plug>(rust-doc)
+  ""  augroup END
+  """ }}}
+  ""Plug 'rust-lang/rust.vim', { 'for': 'rust' } " {{{
+  ""  let g:rustfmt_autosave = 1
+  """ }}}
+  " PYTHON ------------------------------------------
+  Plug 'nvie/vim-flake8' " {{{
+    let g:flake8_show_in_gutter=1
+    let g:flake8_show_in_file=1
+  " }}}
+  " GO ----------------------------------------------
+  Plug 'fatih/vim-go', { 'do': ':GoInstallBinaries' }
+  let g:go_auto_type_info = 1
+  " SYNTAX HIGHLIGHTING ---------------------------------
+  Plug 'sheerun/vim-polyglot'
+  ""Plug 'scrooloose/syntastic'
+  let g:polyglot_disabled = ['go']
 " }}}
 " FINISH vim-plug {{{
 call plug#end()
